@@ -1,7 +1,7 @@
 import Login from '@/components/auth/login';
 import Link from 'next/link';
 
-export default function JoinPage() {
+export default function LoginPage() {
   return (
     <section className='pt-4 px-4'>
       <h1 className='text-2xl md:text-4xl text-indigo-500 dark:text-gray-300 font-bold'>
