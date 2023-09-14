@@ -6,14 +6,11 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { JoinValidator } from '@/libs/validator/auth';
+import {
+  JoinRequest,
+  JoinValidator,
+} from '@/libs/validator/auth';
 import { Icons } from '../icons';
-
-interface FormProps {
-  email: string;
-  password: string;
-  username: string;
-}
 
 const Join = () => {
   const router = useRouter();
@@ -21,7 +18,7 @@ const Join = () => {
     register,
     handleSubmit,
     formState: { errors, isValid },
-  } = useForm<FormProps>({
+  } = useForm<JoinRequest>({
     mode: 'onChange',
     resolver: zodResolver(JoinValidator),
   });
@@ -29,8 +26,27 @@ const Join = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
-  const onValid = async (formData: FormProps) => {
-    console.log(formData);
+  const onValid = async (formData: JoinRequest) => {
+    if (errorMessage !== '') setErrorMessage('');
+    setIsLoading(true);
+
+    try {
+      const { data } = await axios.post(
+        '/api/auth/join',
+        formData,
+      );
+      if (data?.success) {
+        router.push('/login');
+      }
+    } catch (error: any) {
+      if (error instanceof AxiosError) {
+        if (error?.response?.status === 400) {
+          setIsLoading(false);
+          setErrorMessage(error.response.data);
+        }
+      }
+      // TODO: status 500 일때 toast
+    }
   };
 
   return (
@@ -133,7 +149,7 @@ const Join = () => {
       </div>
       {errorMessage && (
         <div className='text-red-500 text-sm flex space-x-1 justify-center items-center font-bold'>
-          {/* <Icons.exclamation className='h-4 w-4 text-red-500' /> */}
+          <Icons.exclamation className='h-4 w-4 text-red-500' />
           <span>{errorMessage}</span>
         </div>
       )}

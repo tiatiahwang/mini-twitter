@@ -9,6 +9,7 @@ import {
   LoginValidator,
 } from '@/libs/validator/auth';
 import { Icons } from '../icons';
+import { signIn } from 'next-auth/react';
 
 const Login = () => {
   const router = useRouter();
@@ -25,7 +26,24 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const onValid = async (formData: LoginRequest) => {
-    console.log(formData);
+    if (errorMessage !== '') setErrorMessage('');
+    setIsLoading(true);
+
+    const { email, password } = formData;
+    const response = await signIn('credentials', {
+      email,
+      password,
+      redirect: false,
+    });
+
+    if (response?.error) {
+      const parsed = JSON.parse(response.error);
+      setIsLoading(false);
+      setErrorMessage(parsed.error);
+    } else {
+      router.push('/');
+      router.refresh();
+    }
   };
 
   return (
@@ -102,7 +120,7 @@ const Login = () => {
       </div>
       {errorMessage && (
         <div className='text-red-500 text-sm flex space-x-1 justify-center items-center font-bold'>
-          {/* <Icons.exclamation className='h-4 w-4 text-red-500' /> */}
+          <Icons.exclamation className='h-4 w-4 text-red-500' />
           <span>{errorMessage}</span>
         </div>
       )}
