@@ -6,7 +6,9 @@ import {
 } from '@/libs/validator/profile';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { Icons } from './icons';
 
 interface ProfileProps {
   user: {
@@ -18,23 +20,37 @@ interface ProfileProps {
 }
 
 const Profile = ({ user }: ProfileProps) => {
-  const { register, handleSubmit } =
-    useForm<EditProfileRequest>({
-      mode: 'onChange',
-      resolver: zodResolver(EditProfileValidator),
-    });
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors },
+  } = useForm<EditProfileRequest>({
+    mode: 'onChange',
+    resolver: zodResolver(EditProfileValidator),
+  });
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+
   const onValid = async ({
     username,
     password,
-    avatar,
-  }: EditProfileRequest) => {};
+  }: EditProfileRequest) => {
+    if (username === user.username) {
+      return setError('username', {
+        message: 'type new username.',
+      });
+    }
+  };
 
   return (
     <div className='pt-4 space-y-4 w-full'>
       <Link href='/profile/mytweets'>
         <div className='border-b-[1px] border-indigo-100 pb-4 flex items-center space-x-2 cursor-pointer text-indigo-500 hover:text-indigo-600'>
           <span className='text-base font-medium'>
-            내가 쓴 트윗
+            My Tweets
           </span>
           <div>
             <svg
@@ -55,11 +71,20 @@ const Profile = ({ user }: ProfileProps) => {
         </div>
       </Link>
       <form
-        className='space-y-6'
+        className='space-y-4'
         onSubmit={handleSubmit(onValid)}
       >
-        <div className='flex items-center justify-between w-full'>
-          <label className='w-2/5 text-base font-medium text-indigo-200 block'>
+        <div className='flex flex-col items-center justify-center space-y-2'>
+          <div className='w-28 h-28 rounded-full bg-gray-400 cursor-pointer'></div>
+          <button className='py-2 px-3 w-fit bg-indigo-400 text-white disabled:bg-gray-200 rounded-md text-sm'>
+            Change
+          </button>
+        </div>
+        <div className='mb-4 space-y-1'>
+          <label
+            htmlFor='Email'
+            className='text-sm text-gray-700/50'
+          >
             Email
             <span className='text-xs pl-[1px]'>
               (unchangeable)
@@ -70,20 +95,94 @@ const Profile = ({ user }: ProfileProps) => {
             type='email'
             id='email'
             value={user.email}
-            className='bg-transparent text-indigo-500 w-full appearance-none'
+            className='w-full bg-transparent border rounded-lg p-2 outline-none text-gray-800/70'
           />
         </div>
-        <div className='flex items-center justify-between w-full'>
-          <label className='w-2/5 text-base font-medium text-indigo-200'>
+        <div className='mb-4 space-y-1'>
+          <label
+            htmlFor='username'
+            className='text-sm text-gray-700/50'
+          >
             Username
           </label>
-          <input
-            disabled={true}
-            type='text'
-            id='username'
-            {...register('username')}
-            className='bg-transparent dark:text-gray-300 text-indigo-500 w-full appearance-none'
-          />
+          <div className='flex justify-between items-center'>
+            <div className='w-[80%]'>
+              <input
+                {...register('username', {
+                  required: 'required.',
+                })}
+                id='username'
+                type='text'
+                placeholder={user.username}
+                className={`w-full bg-transparent border rounded-lg p-2 outline-none ${
+                  errors?.username
+                    ? 'border-red-500'
+                    : 'focus:border-main'
+                }`}
+                aria-invalid={Boolean(errors.username)}
+              />
+              {errors?.username?.message && (
+                <span className='text-red-500 text-sm'>
+                  {errors.username.message}
+                </span>
+              )}
+            </div>
+            <div className='flex justify-end items-center w-fit'>
+              <button className='py-2 px-3 w-full bg-indigo-400 text-white disabled:bg-gray-200 rounded-md text-sm'>
+                Change
+              </button>
+            </div>
+          </div>
+        </div>
+        <div className='mb-4 space-y-1'>
+          <label
+            htmlFor='password'
+            className='text-sm text-gray-700/50'
+          >
+            Password
+          </label>
+          <div className='flex justify-between items-center'>
+            <div className='w-[80%]'>
+              <div className='flex items-center border rounded-lg p-2'>
+                <input
+                  {...register('password')}
+                  id='password'
+                  type={showPassword ? 'text' : 'password'}
+                  className={`w-full bg-transparent outline-none ${
+                    errors?.password
+                      ? 'border-red-500'
+                      : 'focus:border-main'
+                  }`}
+                  aria-invalid={Boolean(errors.password)}
+                />
+                {showPassword ? (
+                  <Icons.show
+                    className='w-4 h-4 text-gray-400 cursor-pointer'
+                    onClick={() =>
+                      setShowPassword((prev) => !prev)
+                    }
+                  />
+                ) : (
+                  <Icons.hide
+                    className='w-4 h-4 text-gray-400 cursor-pointer'
+                    onClick={() =>
+                      setShowPassword((prev) => !prev)
+                    }
+                  />
+                )}
+              </div>
+              {errors?.password?.message && (
+                <span className='text-red-500 text-sm'>
+                  {errors.password.message}
+                </span>
+              )}
+            </div>
+            <div className='flex justify-end items-center w-fit'>
+              <button className='py-2 px-3 w-full bg-indigo-400 text-white disabled:bg-gray-200 rounded-md text-sm'>
+                Change
+              </button>
+            </div>
+          </div>
         </div>
       </form>
     </div>

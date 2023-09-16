@@ -154,6 +154,7 @@ const Join = () => {
         </div>
       )}
       <button
+        type='submit'
         className='py-2 w-full bg-indigo-400 text-white disabled:bg-gray-200 rounded-md'
         disabled={isLoading || !isValid}
       >
