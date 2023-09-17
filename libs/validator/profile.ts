@@ -24,6 +24,21 @@ export const EditProfileValidator = z.object({
   avatar: z.string().optional().or(z.literal('')),
 });
 
+export const EditUsernameValidator = z.object({
+  username: z
+    .string()
+    .min(2, {
+      message: 'minimum 2 characters.',
+    })
+    .max(10, {
+      message: 'maximum 10 characters.',
+    }),
+});
+
 export type EditProfileRequest = z.infer<
   typeof EditProfileValidator
+>;
+
+export type EditUsernameRequest = z.infer<
+  typeof EditUsernameValidator
 >;
