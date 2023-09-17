@@ -1,7 +1,8 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import Providers from '@/libs/providers';
-import Sidebar from '@/components/sidebar';
+import Sidebar from '@/components/sidebar/sidebar';
+import Aside from '@/components/aside/aside';
 
 export const metadata: Metadata = {
   title: 'Mini Twitter',
@@ -33,11 +34,11 @@ export default function RootLayout({
                 <div className='col-span-3'>
                   <Sidebar />
                 </div>
-                <div className='col-span-5 border-x'>
+                <div className='sm:col-span-8 md:col-span-5'>
                   {children}
                 </div>
-                <div className='col-span-3'>
-                  SECTION WILL COME HERE
+                <div className='invisible md:visible md:col-span-3'>
+                  <Aside />
                 </div>
               </div>
             </div>
