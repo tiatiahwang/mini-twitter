@@ -28,21 +28,8 @@ export default function RootLayout({
               </div>
             </div>
           </div> */}
-          <div className='w-full min-h-full'>
-            <div className='mx-auto max-w-7xl'>
-              <div className='grid grid-cols-11'>
-                <div className='col-span-3'>
-                  <Sidebar />
-                </div>
-                <div className='sm:col-span-8 md:col-span-5'>
-                  {children}
-                </div>
-                <div className='invisible md:visible md:col-span-3'>
-                  <Aside />
-                </div>
-              </div>
-            </div>
-          </div>
+
+          {children}
         </Providers>
       </body>
     </html>

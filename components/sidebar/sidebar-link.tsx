@@ -2,30 +2,32 @@ import Link from 'next/link';
 import { HeroIcon } from '@/components/ui/hero-icon';
 import { IconName } from '@/components/ui/hero-icon';
 
-type NavLinkProps = {
+type SidebarLinkProps = {
   href: string;
   iconName: IconName;
   linkName: string;
   pathname: string;
 };
-const NavLink = ({
+
+const SidebarLink = ({
   href,
   iconName,
   linkName,
   pathname,
-}: NavLinkProps) => {
+}: SidebarLinkProps) => {
   const isActive = pathname === href;
   return (
-    <Link href={href} className='group flex outline-none'>
+    <Link
+      href={href}
+      className='group flex outline-none text-xl py-1'
+    >
       <div
-        className={`custom-button flex items-center gap-4 self-start pr-5 text-xl transition
-                            group-hover:bg-hover-color group-focus-visible:ring-2 group-focus-visible:ring-white
-                            group-focus-visible:duration-200 ${
-                              isActive && 'font-bold'
-                            }`}
+        className={`px-3 py-3 rounded-full flex items-center transition duration-200 group-hover:bg-sidebar-hover-color ${
+          isActive && 'font-bold'
+        }`}
       >
         <HeroIcon
-          className={`h-7 w-7 ${
+          className={`h-7 w-7 mr-4 ${
             isActive &&
             ['Explore'].includes(linkName) &&
             'stroke-white'
@@ -39,4 +41,4 @@ const NavLink = ({
   );
 };
 
-export default NavLink;
+export default SidebarLink;
