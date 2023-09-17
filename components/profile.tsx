@@ -1,18 +1,23 @@
 'use client';
 
+import axios, { AxiosError } from 'axios';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { ChangeEvent, useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { nanoid } from 'nanoid';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { useMutation } from '@tanstack/react-query';
+
+import { Icons } from './icons';
 import {
+  EditAvatarRequest,
   EditPasswordRequest,
   EditProfileRequest,
   EditProfileValidator,
   EditUsernameRequest,
 } from '@/libs/validator/profile';
-import { zodResolver } from '@hookform/resolvers/zod';
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { Icons } from './icons';
-import { useMutation } from '@tanstack/react-query';
-import axios, { AxiosError } from 'axios';
 
 interface ProfileProps {
   user: {
@@ -23,29 +28,56 @@ interface ProfileProps {
   };
 }
 
+const TODAY = new Date().toJSON().slice(0, 10);
+
 const Profile = ({ user }: ProfileProps) => {
+  const router = useRouter();
   const {
     register,
     setError,
     getValues,
     setValue,
     formState: { errors },
+    watch,
   } = useForm<EditProfileRequest>({
     mode: 'onChange',
     resolver: zodResolver(EditProfileValidator),
   });
 
+  const [isAvatarUploading, setIsAvatarUploading] =
+    useState(false);
+  const [avatarPreview, setAvatarPreview] = useState('');
+  const avatar = watch('avatar');
+
   const [showPassword, setShowPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] =
-    useState(false);
-
-  const [selectPassword, setSelectPassword] =
     useState(false);
 
   useEffect(() => {
     if (user?.username)
       setValue('username', user?.username);
   }, [user, setValue]);
+
+  const { mutate: changeAvatar } = useMutation({
+    mutationFn: async ({ avatar }: EditAvatarRequest) => {
+      const { data } = await axios.post(
+        '/api/profile/edit/avatar',
+        { avatar },
+      );
+      return data;
+    },
+    onError: (error: any) => {
+      if (error instanceof AxiosError) {
+        //TODO: TOAST
+      }
+    },
+    onSuccess: (data) => {
+      if (data?.success) {
+        setIsAvatarUploading(false);
+        router.refresh();
+      }
+    },
+  });
 
   const {
     mutate: changeUsername,
@@ -113,6 +145,66 @@ const Profile = ({ user }: ProfileProps) => {
     },
   });
 
+  const onChangeAvatar = async (
+    event: ChangeEvent<HTMLInputElement>,
+  ) => {
+    if (!event.target.files) {
+      //TODO: TOAST
+      console.log('NO FILES!');
+      return;
+    }
+
+    const fileSize = event.target.files[0].size;
+    const maxSize = 1024 * 1024 * 5; // 5MB
+
+    if (fileSize > maxSize) {
+      console.log('less than 5MB');
+      //TODO: TOAST
+      return;
+    }
+
+    try {
+      setIsAvatarUploading(true);
+      const {
+        data: { uploadURL },
+      } = await axios.post('/api/files');
+      const form = new FormData();
+      form.append(
+        'file',
+        event.target.files[0],
+        `${TODAY}-${nanoid(5)}-${user.id}`,
+      );
+      const {
+        data: {
+          result: { variants },
+        },
+      } = await axios.post(uploadURL, form);
+
+      if (!variants) {
+        setIsAvatarUploading(false);
+        //TODO: TOAST
+        console.log('NO VARIANTS');
+        return;
+      }
+      const url =
+        variants[0].split('/').slice(0, 5).join('/') +
+        '/avatar';
+
+      setAvatarPreview(url);
+      changeAvatar({ avatar: url });
+    } catch (error: any) {
+      setIsAvatarUploading(false);
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 413) {
+          console.log('less than 12000px');
+          //TODO: TOAST
+          return;
+        }
+      }
+      console.log('ERROR');
+    }
+  };
+
   const onChangeUsername = () => {
     const username = getValues('username');
     if (username === user.username || !username) {
@@ -146,6 +238,7 @@ const Profile = ({ user }: ProfileProps) => {
 
   return (
     <div className='pt-4 space-y-4 w-full'>
+      {/* my tweets */}
       <Link href='/profile/mytweets'>
         <div className='border-b-[1px] border-indigo-100 pb-4 flex items-center space-x-2 cursor-pointer text-indigo-500 hover:text-indigo-600'>
           <span className='text-base font-medium'>
@@ -171,11 +264,44 @@ const Profile = ({ user }: ProfileProps) => {
       </Link>
       <div className='space-y-4'>
         {/* avatar */}
-        <div className='flex flex-col items-center justify-center space-y-2'>
-          <div className='w-28 h-28 rounded-full bg-gray-400 cursor-pointer'></div>
-          <button className='py-2 px-3 w-fit bg-indigo-400 text-white disabled:bg-gray-200 rounded-md text-sm'>
-            Change
-          </button>
+        <div className='flex flex-col items-center justify-center mb-6'>
+          {isAvatarUploading ? (
+            <div className='relative aspect-square w-28 h-28 rounded-full border'>
+              <span className='w-full h-full flex items-center justify-center text-[10px] text-gray-400'>
+                Uploading...
+              </span>
+            </div>
+          ) : avatarPreview ? (
+            <div className='relative aspect-square w-28 h-28 rounded-full'>
+              <Image
+                fill
+                src={avatarPreview!}
+                alt='user avatar'
+                referrerPolicy='no-referrer'
+                className='rounded-full'
+              />
+            </div>
+          ) : (
+            <Icons.user className='w-28 h-28 p-1 rounded-full text-gray-800/70' />
+          )}
+          <input
+            id='avatar'
+            name='avatar'
+            type='file'
+            accept='image/png, image/jpeg, image/jpg'
+            className='sr-only'
+            onChange={(event) => onChangeAvatar(event)}
+          />
+          <label
+            htmlFor='avatar'
+            className={`py-2 px-3 mt-2 w-fit bg-indigo-400 text-white rounded-md text-sm cursor-pointer ${
+              isAvatarUploading
+                ? 'bg-gray-200'
+                : 'bg-indigo-400'
+            }`}
+          >
+            {isAvatarUploading ? 'Uploading' : 'Change'}
+          </label>
         </div>
         {/* email */}
         <div className='mb-4 space-y-1'>

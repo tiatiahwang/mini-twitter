@@ -34,6 +34,10 @@ export const EditProfileValidator = z.object({
   avatar: z.string().optional().or(z.literal('')),
 });
 
+export const EditAvatarValidator = z.object({
+  avatar: z.string(),
+});
+
 export const EditUsernameValidator = z.object({
   username: z
     .string()
@@ -66,6 +70,10 @@ export const EditPasswordValidator = z.object({
 
 export type EditProfileRequest = z.infer<
   typeof EditProfileValidator
+>;
+
+export type EditAvatarRequest = z.infer<
+  typeof EditAvatarValidator
 >;
 
 export type EditUsernameRequest = z.infer<
