@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  EditPasswordRequest,
   EditProfileRequest,
   EditProfileValidator,
   EditUsernameRequest,
@@ -35,6 +36,11 @@ const Profile = ({ user }: ProfileProps) => {
   });
 
   const [showPassword, setShowPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] =
+    useState(false);
+
+  const [selectPassword, setSelectPassword] =
+    useState(false);
 
   useEffect(() => {
     if (user?.username)
@@ -69,6 +75,44 @@ const Profile = ({ user }: ProfileProps) => {
     },
   });
 
+  const {
+    mutate: changePassword,
+    isLoading: isPasswordLoading,
+  } = useMutation({
+    mutationFn: async ({
+      password,
+      newPassword,
+    }: EditPasswordRequest) => {
+      const { data } = await axios.post(
+        '/api/profile/edit/password',
+        { password, newPassword },
+      );
+
+      return data;
+    },
+    onError: (error) => {
+      //TODO: TOAST
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 401)
+          setError('password', {
+            message: error?.response?.data,
+          });
+        if (error.response?.status === 400) {
+          setError('newPassword', {
+            message: error?.response?.data,
+          });
+        }
+      }
+    },
+    onSuccess: (data) => {
+      if (data?.success) {
+        setValue('password', '');
+        setValue('newPassword', '');
+        //TODO: TOAST
+      }
+    },
+  });
+
   const onChangeUsername = () => {
     const username = getValues('username');
     if (username === user.username || !username) {
@@ -77,6 +121,27 @@ const Profile = ({ user }: ProfileProps) => {
       });
     }
     changeUsername({ username });
+  };
+
+  const onChangePassword = () => {
+    const password = getValues('password');
+    const newPassword = getValues('newPassword');
+
+    if (!password) {
+      setError('password', {
+        message: 'Type current password.',
+      });
+    }
+
+    if (!newPassword) {
+      setError('newPassword', {
+        message: 'Type new password.',
+      });
+    }
+
+    if (password && newPassword) {
+      changePassword({ password, newPassword });
+    }
   };
 
   return (
@@ -139,7 +204,7 @@ const Profile = ({ user }: ProfileProps) => {
           >
             Username
           </label>
-          <div className='flex flex-col'>
+          <div>
             <div className='flex justify-between items-center'>
               <div className='w-[80%]'>
                 <input
@@ -151,7 +216,7 @@ const Profile = ({ user }: ProfileProps) => {
                   className={`w-full bg-transparent border rounded-lg p-2 outline-none ${
                     errors?.username
                       ? 'border-red-500'
-                      : 'focus:border-main'
+                      : 'focus:border-indigo-500'
                   }`}
                   aria-invalid={Boolean(errors.username)}
                 />
@@ -175,54 +240,111 @@ const Profile = ({ user }: ProfileProps) => {
             </div>
           </div>
         </div>
-        {/* password */}
+        <div className='border-b-[1px] border-indigo-100 pb-4 ' />
+        {/* current password */}
         <div className='mb-4 space-y-1'>
           <label
             htmlFor='password'
             className='text-sm text-gray-700/50'
           >
-            Password
+            Current Password
           </label>
-          <div className='flex justify-between items-center'>
-            <div className='w-[80%]'>
-              <div className='flex items-center border rounded-lg p-2'>
-                <input
-                  {...register('password')}
-                  id='password'
-                  type={showPassword ? 'text' : 'password'}
-                  className={`w-full bg-transparent outline-none ${
-                    errors?.password
-                      ? 'border-red-500'
-                      : 'focus:border-main'
-                  }`}
-                  aria-invalid={Boolean(errors.password)}
+          <div className='flex flex-col space-y-1'>
+            <div className='w-[80%] relative'>
+              <input
+                {...register('password')}
+                id='password'
+                type={showPassword ? 'text' : 'password'}
+                className={`w-full bg-transparent outline-none border p-2 rounded-md ${
+                  errors?.password
+                    ? 'border-red-500'
+                    : 'focus:border-indigo-500'
+                }`}
+                aria-invalid={Boolean(errors.password)}
+              />
+              {showPassword ? (
+                <Icons.show
+                  className='absolute right-2 w-4 h-4 text-gray-400 cursor-pointer'
+                  onClick={() =>
+                    setShowPassword((prev) => !prev)
+                  }
                 />
-                {showPassword ? (
+              ) : (
+                <Icons.hide
+                  className='absolute right-2 bottom-3 w-4 h-4 text-gray-400 cursor-pointer'
+                  onClick={() =>
+                    setShowPassword((prev) => !prev)
+                  }
+                />
+              )}
+            </div>
+            {errors?.password?.message && (
+              <span className='text-red-500 text-sm'>
+                {errors.password.message}
+              </span>
+            )}
+          </div>
+        </div>
+        {/* new password */}
+        <div className='mb-4 space-y-1'>
+          <label
+            htmlFor='newPassword'
+            className='text-sm text-gray-700/50'
+          >
+            New Password
+          </label>
+          <div>
+            <div className='flex justify-between items-center'>
+              <div className='w-[80%] relative'>
+                <input
+                  {...register('newPassword')}
+                  id='newPassword'
+                  type={
+                    showNewPassword ? 'text' : 'password'
+                  }
+                  className={`w-full bg-transparent outline-none border p-2 rounded-md ${
+                    errors?.newPassword
+                      ? 'border-red-500'
+                      : 'focus:border-indigo-500'
+                  }`}
+                  aria-invalid={Boolean(errors.newPassword)}
+                />
+                {showNewPassword ? (
                   <Icons.show
-                    className='w-4 h-4 text-gray-400 cursor-pointer'
+                    className='absolute right-2 w-4 h-4 text-gray-400 cursor-pointer'
                     onClick={() =>
-                      setShowPassword((prev) => !prev)
+                      setShowNewPassword((prev) => !prev)
                     }
                   />
                 ) : (
                   <Icons.hide
-                    className='w-4 h-4 text-gray-400 cursor-pointer'
+                    className='absolute right-2 bottom-3 w-4 h-4 text-gray-400 cursor-pointer'
                     onClick={() =>
-                      setShowPassword((prev) => !prev)
+                      setShowNewPassword((prev) => !prev)
                     }
                   />
                 )}
               </div>
-              {errors?.password?.message && (
+              <div>
+                <div className='flex justify-end items-center w-fit'>
+                  <button
+                    disabled={isPasswordLoading}
+                    onClick={onChangePassword}
+                    className='py-2 px-3 w-full bg-indigo-400 text-white disabled:bg-gray-200 rounded-md text-sm'
+                  >
+                    {isPasswordLoading
+                      ? 'Loading'
+                      : 'Change'}
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div>
+              {errors?.newPassword?.message && (
                 <span className='text-red-500 text-sm'>
-                  {errors.password.message}
+                  {errors.newPassword.message}
                 </span>
               )}
-            </div>
-            <div className='flex justify-end items-center w-fit'>
-              <button className='py-2 px-3 w-full bg-indigo-400 text-white disabled:bg-gray-200 rounded-md text-sm'>
-                Change
-              </button>
             </div>
           </div>
         </div>
