@@ -25,9 +25,9 @@ const NAV_ITEMS = [
 
 const Sidebar = () => {
   const pathname = usePathname();
-  console.log(pathname, '');
+
   return (
-    <section className='fixed border-r px-4 sm:w-[68px] md:w-[88px] lg:w-[275px] flex flex-col items-center lg:items-stretch h-screen'>
+    <section className='fixed px-4 sm:w-[68px] md:w-[88px] lg:w-[275px] flex flex-col items-center lg:items-stretch h-screen'>
       <div className='flex flex-col items-stretch h-full space-y-4 mt-4'>
         <Link
           href='/'
