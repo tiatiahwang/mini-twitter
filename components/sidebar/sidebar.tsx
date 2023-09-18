@@ -15,8 +15,7 @@ import { HiOutlineHashtag } from 'react-icons/hi';
 import { HiEnvelope } from 'react-icons/hi2';
 
 const NAV_ITEMS = [
-  { title: 'Twitter', icon: BsTwitter },
-  { title: 'Home', icon: BiHomeCircle },
+  { title: '', icon: BiHomeCircle },
   { title: 'Explore', icon: HiOutlineHashtag },
   { title: 'Notifications', icon: BsBell },
   { title: 'Messages', icon: HiEnvelope },
@@ -26,19 +25,29 @@ const NAV_ITEMS = [
 
 const Sidebar = () => {
   const pathname = usePathname();
-
+  console.log(pathname, '');
   return (
     <section className='fixed border-r px-4 sm:w-[68px] md:w-[88px] lg:w-[275px] flex flex-col items-center lg:items-stretch h-screen'>
       <div className='flex flex-col items-stretch h-full space-y-4 mt-4'>
+        <Link
+          href='/'
+          className='rounded-full p-4 text-2xl w-fit transition duration-200 hover:bg-sidebar-hover-color'
+        >
+          <BsTwitter />
+        </Link>
         {NAV_ITEMS.map((item) => (
           <Link
             className={`text-2xl flex items-center justify-start w-fit space-x-4 
-                    transition duration-200 hover:bg-sidebar-hover-color ${
-                      item.title === 'Twitter'
-                        ? 'rounded-full p-4'
-                        : 'rounded-3xl py-2 px-4 '
+                    transition duration-200 hover:bg-sidebar-hover-color rounded-3xl py-2 px-4 ${
+                      pathname ===
+                        `/${item.title.toLowerCase()}` &&
+                      'font-bold'
                     }`}
-            href={`/${item.title.toLowerCase()}`}
+            href={
+              item.title === ''
+                ? '/'
+                : `/${item.title.toLowerCase()}`
+            }
             key={item.title}
           >
             <div>
@@ -46,12 +55,14 @@ const Sidebar = () => {
             </div>
             {item.title !== 'Twitter' && (
               <div className='hidden lg:flex'>
-                {item.title}
+                {item.title === ''
+                  ? 'Home'
+                  : `${item.title}`}
               </div>
             )}
           </Link>
         ))}
-        <div className='lg:hidden px-'>
+        <div className='lg:hidden'>
           <button
             className='w-fit rounded-full p-4 bg-accent-blue-secondary text-white text-2xl font-bold 
                   hover:bg-opacity-90 transition duration-200'
