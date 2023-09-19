@@ -4,7 +4,7 @@ import {
   AiOutlineHeart,
   AiOutlineRetweet,
 } from 'react-icons/ai';
-import { BsChat } from 'react-icons/bs';
+import { BsChat, BsDot, BsThreeDots } from 'react-icons/bs';
 import {
   IoShareOutline,
   IoStatsChart,
@@ -12,7 +12,7 @@ import {
 
 const TweetList = () => {
   return (
-    <main className='ml-[275px] w-full h-full max-w-[600px] min-h-screen flex flex-col border-l-[0.5px] border-r-[0.5px]'>
+    <main className='w-full lg:w-[52%] h-full min-h-screen flex flex-col border-l-[0.5px] border-r-[0.5px]'>
       <h1 className='text-xl font-bold p-6 backdrop-blur bg-black/10 sticky top-0'>
         Home
       </h1>
@@ -49,7 +49,22 @@ const TweetList = () => {
           className='border-b-[0.5px] p-2 flex space-x-4'
         >
           <div className='w-11 h-11 bg-primary rounded-full flex-none'></div>
-          <div>
+          <div className='flex flex-col'>
+            <div className='flex justify-between w-full'>
+              <div className='flex space-x-2'>
+                <div className='font-bold'>tiatia</div>
+                <div className='flex items-center justify-center text-primary text-sm'>
+                  <div>@tiatia</div>
+                  <div>
+                    <BsDot />
+                  </div>
+                  <div>1 hour ago</div>
+                </div>
+              </div>
+              <div className=''>
+                <BsThreeDots />
+              </div>
+            </div>
             <div className='text-base'>
               Hello Hello Hello Hello. Hello Hello Hello
               Hello. Hello Hello Hello Hello. Hello Hello

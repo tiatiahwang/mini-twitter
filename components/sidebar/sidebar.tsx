@@ -27,7 +27,7 @@ const Sidebar = () => {
   const pathname = usePathname();
 
   return (
-    <section className='fixed px-4 sm:w-[68px] md:w-[88px] lg:w-[275px] flex flex-col items-center lg:items-stretch h-screen'>
+    <section className='sticky top-0 px-4 w-[10%] lg:w-[20%] flex flex-col items-center lg:items-stretch h-screen'>
       <div className='flex flex-col items-stretch h-full space-y-4 mt-4'>
         <Link
           href='/'
@@ -77,14 +77,16 @@ const Sidebar = () => {
           Post
         </button>
       </div>
-      <button
-        className='w-full rounded-full flex items-center justify-between space-x-2 m-4 bg-transparent p-4 text-center  
-                 hover:bg-sidebar-hover-color transition duration-200'
-      >
-        <div className='lg:hidden'>
+      <button>
+        <div className='lg:hidden py-4'>
           <div className='rounded-full bg-primary w-10 h-10'></div>
         </div>
-        <div className='hidden lg:flex items-center space-x-2'>
+      </button>
+      <button
+        className='hidden w-full rounded-full lg:flex items-center justify-between space-x-2 bg-transparent p-4 text-center  
+                 hover:bg-sidebar-hover-color transition duration-200'
+      >
+        <div className='flex items-center space-x-2'>
           <div className='rounded-full bg-primary w-10 h-10'></div>
           <div className='text-left'>
             <div className='font-semibold'>
@@ -93,7 +95,7 @@ const Sidebar = () => {
             <div className='text-xs'>@cloner</div>
           </div>
         </div>
-        <div className='hidden lg:block'>
+        <div className='block'>
           <BsThreeDots />
         </div>
       </button>

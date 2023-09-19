@@ -34,7 +34,7 @@ const InputBox = () => {
           value={inputValue}
           onChange={onChange}
           ref={inputRef}
-          className='flex-1 !bg-search-background outline-none placeholder:text-secondary'
+          className='flex-1 bg-search-background outline-none placeholder:text-secondary'
         />
         <button
           onClick={clearInputValue}

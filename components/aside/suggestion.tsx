@@ -25,7 +25,7 @@ const dummyProfiles = [
 
 const Suggestion = () => {
   return (
-    <section className='bg-sidebar-background rounded-2xl'>
+    <section className='bg-search-background rounded-2xl'>
       <div className='px-4 py-3'>
         <h2 className='text-xl font-bold'>Who to follow</h2>
       </div>
