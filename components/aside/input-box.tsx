@@ -1,7 +1,7 @@
 'use client';
 
 import { ChangeEvent, useRef, useState } from 'react';
-import { HeroIcon } from '@/components/ui/hero-icon';
+import { BsSearch } from 'react-icons/bs';
 
 const InputBox = () => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -18,37 +18,29 @@ const InputBox = () => {
   };
 
   return (
-    <form className='sticky top-0 z-10 -my-3 bg-black py-3'>
-      <label
-        className='group flex items-center justify-between gap-4 rounded-full bg-search-background px-4 py-3
-                    transition focus-within:bg-black focus-within:ring-2 focus-within:ring-search-close-background'
-      >
-        <HeroIcon
-          className='h-5 w-5 text-secondary transition-colors group-focus-within:text-search-close-background'
-          iconName='MagnifyingGlassIcon'
-        />
-
+    <form>
+      <div className='relative w-full h-full'>
         <input
+          id='search'
           type='text'
-          placeholder='Search Twitter'
           value={inputValue}
           onChange={onChange}
           ref={inputRef}
-          className='flex-1 bg-search-background outline-none placeholder:text-secondary'
+          placeholder='Search Twitter'
+          className='peer w-full h-full rounded-full outline-none bg-search-background pl-14 pr-4
+                      transition focus:border-accent-blue-secondary border-2 border-search-background placeholder:text-secondary'
         />
-        <button
-          onClick={clearInputValue}
-          disabled={!inputValue}
-          className={`scale-50 bg-search-close-background p-1 opacity-0 hover:brightness-90 ${
-            inputValue && 'scale-100 opacity-100'
-          }`}
+        <p className='peer-focus:visible invisible'>
+          Hello
+        </p>
+        <label
+          htmlFor='search'
+          className='absolute top-0 left-0 h-full flex items-center justify-center p-4
+                      text-secondary peer-focus:text-accent-blue-secondary'
         >
-          <HeroIcon
-            className='h-4 w-4 stroke-black'
-            iconName='XMarkIcon'
-          />
-        </button>
-      </label>
+          <BsSearch className='w-4 h-4' />
+        </label>
+      </div>
     </form>
   );
 };

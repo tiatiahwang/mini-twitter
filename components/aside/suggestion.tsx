@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { HeroIcon } from '../ui/hero-icon';
+import { HiOutlineBadgeCheck } from 'react-icons/hi';
 
 const dummyProfiles = [
   {
@@ -54,13 +54,7 @@ const Suggestion = () => {
                     <p className='custom-underline font-bold'>
                       {name}
                     </p>
-                    {verified && (
-                      <HeroIcon
-                        iconName='CheckBadgeIcon'
-                        className='h-4 w-4'
-                        solid
-                      />
-                    )}
+                    {verified && <HiOutlineBadgeCheck />}
                   </div>
                   <p className='text-secondary'>
                     @{username}
@@ -69,7 +63,7 @@ const Suggestion = () => {
               </div>
               <button
                 className='bg-follow-button-background px-4 py-1 font-bold text-follow-text-color text-sm rounded-full
-                                    transition duration-200 hover:brightness-90'
+                          transition duration-200 hover:brightness-90'
               >
                 Follow
               </button>
