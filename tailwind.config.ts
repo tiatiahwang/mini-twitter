@@ -8,6 +8,7 @@ const config: Config = {
   ],
   theme: {
     colors: {
+      error: '#F4212E',
       black: '#000',
       primary: '#E7E9EA',
       secondary: '#71767B',
