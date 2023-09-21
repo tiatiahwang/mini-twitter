@@ -196,14 +196,14 @@ const Join = () => {
               )}
             </div>
             {errorMessage && (
-              <div className='text-red-500 text-sm flex space-x-1 justify-center items-center font-bold'>
-                <Icons.exclamation className='h-4 w-4 text-red-500' />
+              <div className='text-error text-sm flex space-x-1 justify-center items-center font-bold'>
+                <Icons.exclamation className='h-4 w-4 text-error' />
                 <span>{errorMessage}</span>
               </div>
             )}
             <button
               type='submit'
-              className='py-2 w-full bg-accent-blue text-white disabled:bg-secondary rounded-full'
+              className='mb-4 py-2 w-full bg-accent-blue text-white disabled:bg-secondary rounded-full'
               disabled={isLoading || !isValid}
             >
               {isLoading ? 'Loading' : 'Join'}

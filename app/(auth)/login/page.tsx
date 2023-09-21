@@ -1,4 +1,5 @@
 import Join from '@/components/auth/join';
+import Login from '@/components/auth/login';
 import Link from 'next/link';
 
 export default function LoginPage() {
@@ -35,12 +36,7 @@ export default function LoginPage() {
               Already have an account?
             </p>
             {/* TODO: need to seperate login page */}
-            <Link
-              href='/login'
-              className='w-full flex justify-center items-center border border-primary rounded-full text-accent-blue py-2 font-semibold'
-            >
-              Sign in
-            </Link>
+            <Login />
           </div>
         </div>
       </div>
