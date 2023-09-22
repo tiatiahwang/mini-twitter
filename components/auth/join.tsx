@@ -40,7 +40,7 @@ const Join = () => {
         formData,
       );
       if (data?.success) {
-        router.push('/login');
+        closeModal();
       }
     } catch (error: any) {
       if (error instanceof AxiosError) {
