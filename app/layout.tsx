@@ -18,18 +18,13 @@ export default function RootLayout({
     <html lang='en'>
       <body suppressHydrationWarning={true}>
         <Providers>
-          {/* <div className='w-full min-h-screen text-gray-700 bg-[#f5f5f5]'>
-            <div className='mx-auto max-w-xl h-full bg-[#f9f9f9]'>
-              <div className='grid grid-cols-8 min-h-screen'>
-                <div className='col-span-1'>
-                  <NavBar />
-                </div>
-                <div className='col-span-7'>{children}</div>
-              </div>
+          <div className='w-full h-full flex justify-center items-center relative'>
+            <div className='max-w-[700px] lg:max-w-screen-xl w-full h-full flex relative'>
+              <Sidebar />
+              {children}
+              <Aside />
             </div>
-          </div> */}
-
-          {children}
+          </div>
         </Providers>
       </body>
     </html>

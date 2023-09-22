@@ -166,7 +166,7 @@ const Login = () => {
             )}
             <button
               type='submit'
-              className='mb-4 py-2 w-full bg-accent-blue text-white disabled:bg-secondary rounded-full'
+              className='mb-4 py-2 w-full bg-accent-blue text-white disabled:bg-secondary rounded-full outline-none'
               disabled={isLoading || !isValid}
             >
               {isLoading ? 'Loading' : 'Sign in'}

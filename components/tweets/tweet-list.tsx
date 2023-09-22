@@ -25,7 +25,7 @@ const TweetList = () => {
             {/* post input */}
             <input
               type='text'
-              className='w-full h-full text-2xl py-2 placeholder:text-secondary bg-sidebar-background'
+              className='w-full h-full text-2xl py-2 placeholder:text-secondary bg-sidebar-background outline-none'
               placeholder='What is happening?'
             />
             {/* post button */}
